@@ -13,6 +13,8 @@ def softmax(predictions):
       probs, np array of the same shape as predictions - 
         probability for every class, 0..1
     '''
+    s_pred =predictions-np.max(predictions)
+    return np.exp(s_pred)/np.sum(np.exp(s_pred))
     # TODO implement softmax
     # Your final implementation shouldn't have any loops
     raise Exception("Not implemented!")
