@@ -14,7 +14,7 @@ def softmax(predictions):
         probability for every class, 0..1
     '''
     s_pred =predictions-np.max(predictions)
-    print(s_pred)
+  
     return np.exp(s_pred)/np.sum(np.exp(s_pred))
     # TODO implement softmax
     # Your final implementation shouldn't have any loops
@@ -56,16 +56,18 @@ def softmax_with_cross_entropy(predictions, target_index):
       loss, single value - cross-entropy loss
       prediction, np array same shape as predictions - gradient of predictions by loss value
     '''
-
+    print('enter of the function = ',predictions, target_index)
     s_pred =predictions-np.max(predictions)
     softmax_ = np.exp(s_pred)/np.sum(np.exp(s_pred))
     loss =  - np.log(softmax_[target_index])
     
     print('s_pred = ',s_pred)
     print('softmax_ = ',softmax_)
-    print('loss = ',loss)
-    prediction = np.zeros_like(predictions,dtype = float)
-    prediction = (- 1/softmax_)
+    
+    # prediction = np.zeros_like(predictions,dtype = float)
+    
+    prediction = (- 1/softmax_).dot(-softmax_derivative(softmax_))
+    print('loss , grand (prediction) = ',loss ,prediction,'\n')
     return loss, prediction
     # TODO implement softmax with cross-entropy
     # Your final implementation shouldn't have any loops
@@ -178,7 +180,9 @@ class LinearSoftmaxClassifier():
 
         return y_pred
 
-
+def softmax_derivative(x):
+    s=x.reshape(-1,1)
+    return (np.diagflat(s) - np.dot(s, s.T))
 
                 
                                                           
