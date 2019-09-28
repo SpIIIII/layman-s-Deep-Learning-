@@ -42,15 +42,15 @@ def check_gradient(f, x, delta=1e-5, tol = 1e-4):
       
       y1 = x.copy()
       y2 = x.copy()
-      y1[ix]+=2
-      y2[ix]-=2
+      y1[ix]+=0.000002
+      y2[ix]-=0.000002
       
-      numeric_grad_at_ix = (f(y1)[0]-f(y2)[0])/4
+      numeric_grad_at_ix = (f(y1)[0]-f(y2)[0])/0.000004
       print(f'grad_check at {ix}  num =' ,numeric_grad_at_ix,'anal =',analytic_grad_at_ix)
       # TODO compute value of numeric gradient of f to idx
-                # if not np.isclose(numeric_grad_at_ix, analytic_grad_at_ix, tol):
-                #   print("Gradients are different at %s. Analytic: %2.5f, Numeric: %2.5f" % (ix, analytic_grad_at_ix, numeric_grad_at_ix))
-                #   return False
+      if not np.isclose(numeric_grad_at_ix, analytic_grad_at_ix, tol):
+        print("Gradients are different at %s. Analytic: %2.5f, Numeric: %2.5f" % (ix, analytic_grad_at_ix, numeric_grad_at_ix))
+        return False
 
       it.iternext()
     

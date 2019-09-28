@@ -14,8 +14,9 @@ def softmax(predictions):
         probability for every class, 0..1
     '''
     s_pred =predictions-np.max(predictions)
-  
-    return np.exp(s_pred)/np.sum(np.exp(s_pred))
+    probs = np.exp(s_pred)/np.sum(np.exp(s_pred))
+    pp('soft max =', probs)
+    return probs
     # TODO implement softmax
     # Your final implementation shouldn't have any loops
     raise Exception("Not implemented!")
@@ -34,8 +35,8 @@ def cross_entropy_loss(probs, target_index):
     Returns:
       loss: single value
     '''
-    # pp (probs[:,target_index])
-    log =        - np.log(probs[np.arange(probs.shape[0]),target_index.flatten()])
+    # log = - np.log(probs[target_index])
+    log =   np.sum(- np.log(probs[np.arange(probs.shape[0]),target_index.flatten()]))
     pp ('log = ',log)
     return log
     # TODO implement cross-entropy
@@ -58,17 +59,19 @@ def softmax_with_cross_entropy(predictions, target_index):
       loss, single value - cross-entropy loss
       prediction, np array same shape as predictions - gradient of predictions by loss value
     '''
+    n_samples = predictions.shape[0]  
+    n_featerus = predictions.shape[1] if len(predictions.shape)>1 else 0
     pp('enter of the function = ',predictions, target_index)
-
-    softmax_ = softmax(predictions)
-    pp('softmax_ = ',softmax_)
-    loss = cross_entropy_loss(softmax_,target_index)# - np.log(softmax_[target_index])
     
-    # prediction = np.zeros_like(predictions,dtype = float)
-    # pp(- 1/softmax_,softmax_derivative(softmax_))
-    print('shapes = ',(- 1/softmax_).shape,softmax_derivative(softmax_).shape)
-    prediction = (- 1/softmax_)@(softmax_derivative(softmax_))
-    pp('loss , grand (prediction) = ',loss.shape ,prediction.shape,'\n')
+    softmax_ = softmax(predictions)
+    loss = cross_entropy_loss(softmax_,target_index)
+    
+    
+    # prediction = (- 1/softmax_)@(softmax_derivative(softmax_))
+    
+    prediction = softmax_.copy()
+    prediction[np.arange(n_samples),target_index]-=1
+    pp('loss , grand (prediction) = ',loss ,prediction,'\n')
     return loss, prediction
     # TODO implement softmax with cross-entropy
     # Your final implementation shouldn't have any loops
@@ -186,6 +189,11 @@ def softmax_derivative(q):
     s = x.reshape(-1,1)
     return (np.diagflat(s) - np.dot(s, s.T))
 
+# def exper(soft,target,n_feat:int=None,n_sempl:int=None):
+#     pp(soft)
+#     soft[np.arange(n_sempl),target]-=1
+#     pp(soft)
+#     return soft
                 
 def fmt_items(lines,max_lines=0):
     max_width=max([len(line)for line in lines])
@@ -193,6 +201,7 @@ def fmt_items(lines,max_lines=0):
     lines = [line.ljust(max_width)for line in lines]
     lines += [empty]*(max_lines - len(lines))
     return lines
+    
 def pp (*list):
     lines = [ str(item).split('\n') for item in list]
     max_lines=max([len(item)for  item in lines])
