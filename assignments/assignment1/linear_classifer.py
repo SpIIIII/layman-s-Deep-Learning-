@@ -35,7 +35,7 @@ def cross_entropy_loss(probs, target_index):
     Returns:
       loss: single value
     '''
-    # log = - np.log(probs[target_index])
+    
     log =   np.sum(- np.log(probs[np.arange(probs.shape[0]),target_index.flatten()]))
     pp ('log = ',log)
     return log
@@ -65,9 +65,6 @@ def softmax_with_cross_entropy(predictions, target_index):
     
     softmax_ = softmax(predictions)
     loss = cross_entropy_loss(softmax_,target_index)
-    
-    
-    # prediction = (- 1/softmax_)@(softmax_derivative(softmax_))
     
     prediction = softmax_.copy()
     prediction[np.arange(n_samples),target_index]-=1
@@ -112,10 +109,25 @@ def linear_softmax(X, W, target_index):
     Returns:
       loss, single value - cross-entropy loss
       gradient, np.array same shape as W - gradient of weight by loss
-
+  
     '''
     predictions = np.dot(X, W)
 
+    n_samples = predictions.shape[0]
+    n_features = predictions.shape[1]
+    pp('enter of linear_softmax',X,W,target_index)
+    soft = softmax(X)
+    loss = cross_entropy_loss(soft,target_index)
+
+    pred = soft.copy()
+    pred[np.arange(n_samples),target_index]-=1
+
+    dW = X.T.dot(soft)
+
+    
+    pp('loss , grand (prediction), grad by W = ',loss ,pred,dW.shape,'\n')
+
+    return loss, dW
     # TODO implement prediction and gradient over W
     # Your final implementation shouldn't have any loops
     raise Exception("Not implemented!")
