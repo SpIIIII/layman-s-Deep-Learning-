@@ -89,12 +89,18 @@ def l2_regularization(W, reg_strength):
       loss, single value - l2 regularization loss
       gradient, np.array same shape as W - gradient of weight by l2 loss
     '''
+    pp('enter of L2 ',W,reg_strength)
 
+    loss = reg_strength * np.sum(W**2)
+    
+    grad = reg_strength*W
+    pp('L2 loss, grad = ',loss,grad)
+    return loss, grad
     # TODO: implement l2 regularization and gradient
     # Your final implementation shouldn't have any loops
     raise Exception("Not implemented!")
 
-    return loss, grad
+    
     
 
 def linear_softmax(X, W, target_index):
@@ -113,10 +119,12 @@ def linear_softmax(X, W, target_index):
     '''
     predictions = np.dot(X, W)
 
+    
     n_samples = predictions.shape[0]
+
     n_features = predictions.shape[1]
     pp('enter of linear_softmax',X,W,target_index)
-    soft = softmax(X)
+    soft = softmax(predictions)
     loss = cross_entropy_loss(soft,target_index)
 
     pred = soft.copy()
@@ -125,7 +133,7 @@ def linear_softmax(X, W, target_index):
     dW = X.T.dot(soft)
 
     
-    pp('loss , grand (prediction), grad by W = ',loss ,pred,dW.shape,'\n')
+    pp('loss , grand (prediction), grad by W = ',loss ,pred,dW,'\n')
 
     return loss, dW
     # TODO implement prediction and gradient over W
