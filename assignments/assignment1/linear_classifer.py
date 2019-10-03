@@ -68,6 +68,8 @@ def softmax_with_cross_entropy(predictions, target_index):
     
     prediction = softmax_.copy()
     prediction[np.arange(n_samples),target_index]-=1
+
+    prediction/=n_samples
     pp('loss , grand (prediction) = ',loss ,prediction,'\n')
     return loss, prediction
     # TODO implement softmax with cross-entropy
@@ -119,21 +121,21 @@ def linear_softmax(X, W, target_index):
     '''
     predictions = np.dot(X, W)
 
-    
+    # loss, grad = softmax_with_cross_entropy(predictions,target_index)
+
+
     n_samples = predictions.shape[0]
 
     n_features = predictions.shape[1]
     pp('enter of linear_softmax',X,W,target_index)
-    soft = softmax(predictions)
-    loss = cross_entropy_loss(soft,target_index)
+    grad = softmax(predictions)
+    loss = cross_entropy_loss(grad,target_index)
 
-    pred = soft.copy()
-    pred[np.arange(n_samples),target_index]-=1
 
-    dW = X.T.dot(soft)
-
+    dW = X.T.dot(grad)
     
-    pp('loss , grand (prediction), grad by W = ',loss ,pred,dW,'\n')
+    
+    pp('loss , grand (prediction), grad by W = ',loss ,grad,dW,'\n')
 
     return loss, dW
     # TODO implement prediction and gradient over W
@@ -155,7 +157,7 @@ class LinearSoftmaxClassifier():
         Arguments:
           X, np array (num_samples, num_features) - training data
           y, np array of int (num_samples) - labels
-          batch_size, int - batch size to use
+          0, int - batch size to use
           learning_rate, float - learning rate for gradient descent
           reg, float - L2 regularization strength
           epochs, int - number of epochs
@@ -179,10 +181,22 @@ class LinearSoftmaxClassifier():
             # Apply gradient to weights using learning rate
             # Don't forget to add both cross-entropy loss
             # and regularization!
-            raise Exception("Not implemented!")
+            # raise Exception("Not implemented!")
 
             # end
+
+            X=X[np.array(batches_indices).ravel()]
+            y=y[np.array(batches_indices).ravel()]
+            
+            prediction = X@self.W
+            loss,grad = softmax_with_cross_entropy(prediction,y)
+            
+            dW = X.T.dot(grad)
+            dW+=reg*dW
+            
+            loss_history.append(loss)
             pp("Epoch %i, loss: %f" % (epoch, loss))
+            self.W += dW*learning_rate
 
         return loss_history
 
