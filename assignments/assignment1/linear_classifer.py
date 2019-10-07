@@ -14,7 +14,7 @@ def softmax(predictions):
     '''
     s_pred =predictions-np.max(predictions)
     probs = np.exp(s_pred)/np.sum(np.exp(s_pred))
-    pp('soft max =', probs)
+    # pp('soft max =', probs)
     return probs
     # TODO implement softmax
     # Your final implementation shouldn't have any loops
@@ -36,7 +36,7 @@ def cross_entropy_loss(probs, target_index):
     '''
     
     log =   np.sum(- np.log(probs[np.arange(probs.shape[0]),target_index.flatten()]))
-    pp ('log = ',log)
+    # pp ('log = ',log)
     return log
     # TODO implement cross-entropy
     # Your final implementation shouldn't have any loops
@@ -60,7 +60,7 @@ def softmax_with_cross_entropy(predictions, target_index):
     '''
     n_samples = predictions.shape[0]  
     n_featerus = predictions.shape[1] if len(predictions.shape)>1 else 0
-    pp('enter of the function = ',predictions, target_index)
+    # pp('enter of the function = ',predictions, target_index)
     
     softmax_ = softmax(predictions)
     
@@ -69,7 +69,7 @@ def softmax_with_cross_entropy(predictions, target_index):
     prediction = softmax_.copy()
     prediction[np.arange(n_samples),target_index.ravel()]-=1/n_samples
     
-    pp('=N_SUMPLES=',n_samples)
+    # pp('=N_SUMPLES=',n_samples)
     # prediction/=n_samples
     pp('loss , grand (prediction) = ',loss ,prediction,'\n')
     return loss, prediction
@@ -98,7 +98,7 @@ def l2_regularization(W, reg_strength):
     loss = reg_strength * np.sum(W**2)
     loss/=n_classes
     grad = reg_strength*W
-    pp('L2 loss, grad = ',loss,grad)
+    # pp('L2 loss, grad = ',loss,grad)
     return loss, grad
     # TODO: implement l2 regularization and gradient
     # Your final implementation shouldn't have any loops
@@ -137,7 +137,7 @@ def linear_softmax(X, W, target_index):
     dW = X.T.dot(grad)
     
     
-    pp('loss , grand (prediction), grad by W = ',loss ,grad,dW,'\n')
+    # pp('loss , grand (prediction), grad by W = ',loss ,grad,dW,'\n')
 
     return loss, dW
     # TODO implement prediction and gradient over W
@@ -169,7 +169,7 @@ class LinearSoftmaxClassifier():
         num_features = X.shape[1]
         num_classes = np.max(y)+1
         if self.W is None:
-            self.W = 0.001 * np.random.randn(num_features, num_classes)
+          self.W = 0.001 * np.random.randn(num_features, num_classes)
 
         loss_history = []
         for epoch in range(epochs):
@@ -198,7 +198,7 @@ class LinearSoftmaxClassifier():
             
             loss_history.append(loss)
             pp("Epoch %i, loss: %f" % (epoch, loss))
-            self.W += dW*learning_rate
+            self.W -= dW*learning_rate
 
             print('== W ==',np.sum(self.W))
 
@@ -222,6 +222,19 @@ class LinearSoftmaxClassifier():
         # Your final implementation shouldn't have any loops
 
         return y_pred
+
+
+    def pred_rand(self,X):
+      self.W = 0.001 * np.random.randn(3073, 10)
+      predicitons = X@self.W
+        
+      y_pred = np.zeros(X.shape[0], dtype=np.int8)
+      y_pred = predicitons.argmax(axis=1)
+
+      return y_pred
+
+
+
 
 def softmax_derivative(q):
     x =softmax(q)
