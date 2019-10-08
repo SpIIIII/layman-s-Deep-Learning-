@@ -36,7 +36,7 @@ def cross_entropy_loss(probs, target_index):
     '''
     
     log =   np.sum(- np.log(probs[np.arange(probs.shape[0]),target_index.flatten()]))
-    # pp ('log = ',log)
+    pp ('log loss = ',log)
     return log
     # TODO implement cross-entropy
     # Your final implementation shouldn't have any loops
@@ -71,7 +71,7 @@ def softmax_with_cross_entropy(predictions, target_index):
     
     # pp('=N_SUMPLES=',n_samples)
     # prediction/=n_samples
-    pp('loss , grand (prediction) = ',loss ,prediction,'\n')
+    # pp('loss , grand (prediction) = ',loss, prediction)
     return loss, prediction
     # TODO implement softmax with cross-entropy
     # Your final implementation shouldn't have any loops
@@ -92,7 +92,7 @@ def l2_regularization(W, reg_strength):
       loss, single value - l2 regularization loss
       gradient, np.array same shape as W - gradient of weight by l2 loss
     '''
-    pp('enter of L2 ',W.shape,reg_strength)
+    # pp('enter of L2 ',W.shape,reg_strength)
     n_classes = W.shape[1]
 
     loss = reg_strength * np.sum(W**2)
