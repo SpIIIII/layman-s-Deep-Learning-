@@ -55,6 +55,9 @@ class ReLULayer:
         pass
 
     def forward(self, X):
+        self.X = X
+        return np.maximum(0,X)
+
         # TODO: Implement forward pass
         # Hint: you'll need to save some information about X
         # to use it later in the backward pass
@@ -72,6 +75,9 @@ class ReLULayer:
         d_result: np array (batch_size, num_features) - gradient
           with respect to input
         """
+        return np.where(self.X>=0,1,0)*d_out
+
+
         # TODO: Implement backward pass
         # Your final implementation shouldn't have any loops
         raise Exception("Not implemented!")

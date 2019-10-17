@@ -35,10 +35,6 @@ def check_gradient(f, x, delta=1e-5, tol = 1e-4):
       ix = it.multi_index
       
       analytic_grad_at_ix = analytic_grad[ix]
-  
-
-      # pp(x,'f(',d(x,2,ix),')- f(',d(x,-2,ix),')/',4,'   =')
-      # pp(f(d(x,-2,ix)[0],'-', f(d(x,-2,ix)[0],'/',4,'   =',(f(d(x,2,ix))[0]-f(d(x,-2,ix))[0])/4)
       
       y1 = x.copy()
       y2 = x.copy()
