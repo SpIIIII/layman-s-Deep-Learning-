@@ -50,6 +50,7 @@ class Param:
         self.grad = np.zeros_like(value)
 
 
+
 class ReLULayer:
     def __init__(self):
         pass
@@ -95,6 +96,9 @@ class FullyConnectedLayer:
         self.X = None
 
     def forward(self, X):
+        self.X = X
+        return self.X.dot(self.W.value)+self.B.value
+
         # TODO: Implement forward pass
         # Your final implementation shouldn't have any loops
         raise Exception("Not implemented!")
@@ -113,6 +117,10 @@ class FullyConnectedLayer:
         d_result: np array (batch_size, n_input) - gradient
           with respect to input
         """
+        
+
+        return self.W
+
         # TODO: Implement backward pass
         # Compute both gradient with respect to input
         # and gradients with respect to W and B

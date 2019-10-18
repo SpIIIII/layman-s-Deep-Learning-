@@ -128,15 +128,8 @@ def linear_softmax(X, W, target_index):
 
     n_samples = predictions.shape[0]
 
-    # n_features = predictions.shape[1]
-    # pp('enter of linear_softmax',X,W,target_index)
-    # grad = softmax(predictions)
-    # loss = cross_entropy_loss(grad,target_index)
-
-
     dW = X.T.dot(grad)
-    
-    
+        
     # pp('loss , grand (prediction), grad by W = ',loss ,grad,dW,'\n')
 
     return loss, dW
@@ -144,7 +137,6 @@ def linear_softmax(X, W, target_index):
     # Your final implementation shouldn't have any loops
     raise Exception("Not implemented!")
     
-    return loss, dW
 
 
 class LinearSoftmaxClassifier():
@@ -241,11 +233,6 @@ def softmax_derivative(q):
     s = x.reshape(-1,1)
     return (np.diagflat(s) - np.dot(s, s.T))
 
-# def exper(soft,target,n_feat:int=None,n_sempl:int=None):
-#     pp(soft)
-#     soft[np.arange(n_sempl),target]-=1
-#     pp(soft)
-#     return soft
                 
 def fmt_items(lines,max_lines=0):
     max_width=max([len(line)for line in lines])
