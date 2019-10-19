@@ -117,9 +117,15 @@ class FullyConnectedLayer:
         d_result: np array (batch_size, n_input) - gradient
           with respect to input
         """
-        
+        d_input = d_out@self.W.value.T
+        d_W = self.X.T@d_out
+        d_B = np.sum(d_out,axis=0)
 
-        return self.W
+        self.W.grad += d_W
+        self.B.grad += d_B
+
+        
+        return d_input
 
         # TODO: Implement backward pass
         # Compute both gradient with respect to input
@@ -135,3 +141,18 @@ class FullyConnectedLayer:
 
     def params(self):
         return {'W': self.W, 'B': self.B}
+
+
+def fmt_items(lines,max_lines=0):
+    max_width=max([len(line)for line in lines])
+    empty =' '*max_width
+    lines = [line.ljust(max_width)for line in lines]
+    lines += [empty]*(max_lines - len(lines))
+    return lines
+    
+def pp (*list):
+    lines = [ str(item).split('\n') for item in list]
+    max_lines=max([len(item)for  item in lines])
+    lines = [fmt_items(item,max_lines=max_lines)for item in lines]
+    lines_t= np.array(lines).T
+    print('\n'.join([' '.join(line) for  line in lines_t]))

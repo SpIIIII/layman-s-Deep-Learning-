@@ -25,8 +25,7 @@ def check_gradient(f, x, delta=1e-5, tol=1e-4):
 
     it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
     while not it.finished:
-        ix = it.multi_index
-        analytic_grad_at_ix = analytic_grad[ix]
+        
         numeric_grad_at_ix = 0
 
         # TODO Copy from previous assignment
@@ -36,10 +35,10 @@ def check_gradient(f, x, delta=1e-5, tol=1e-4):
         
         y1 = x.copy()
         y2 = x.copy()
-        y1[ix]+=0.00002
-        y2[ix]-=0.00002
+        y1[ix]+=delta
+        y2[ix]-=delta
         
-        numeric_grad_at_ix = (f(y1)[0]-f(y2)[0])/0.00004
+        numeric_grad_at_ix = (f(y1)[0]-f(y2)[0])/(delta*2)
         print(f'==GRAD_CHECK== at {ix}  num =' ,numeric_grad_at_ix,'anal =',analytic_grad_at_ix)
 
         if not np.isclose(numeric_grad_at_ix, analytic_grad_at_ix, tol):
@@ -74,6 +73,7 @@ def check_layer_gradient(layer, x, delta=1e-5, tol=1e-4):
         loss = np.sum(output * output_weight)
         d_out = np.ones_like(output) * output_weight
         grad = layer.backward(d_out)
+        
         return loss, grad
 
     return check_gradient(helper_func, x, delta, tol)
@@ -145,3 +145,16 @@ def check_model_gradient(model, X, y,
             return False
 
     return True
+def fmt_items(lines,max_lines=0):
+    max_width=max([len(line)for line in lines])
+    empty =' '*max_width
+    lines = [line.ljust(max_width)for line in lines]
+    lines += [empty]*(max_lines - len(lines))
+    return lines
+    
+def pp (*list):
+    lines = [ str(item).split('\n') for item in list]
+    max_lines=max([len(item)for  item in lines])
+    lines = [fmt_items(item,max_lines=max_lines)for item in lines]
+    lines_t= np.array(lines).T
+    print('\n'.join([' '.join(line) for  line in lines_t]))
