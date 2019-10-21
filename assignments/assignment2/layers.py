@@ -1,5 +1,47 @@
 import numpy as np
 
+def softmax(predictions):
+    '''
+    Computes probabilities from scores
+
+    Arguments:
+      predictions, np array, shape is either (N) or (batch_size, N) -
+        classifier output
+
+    Returns:
+      probs, np array of the same shape as predictions - 
+        probability for every class, 0..1
+    '''
+    s_pred =predictions-np.max(predictions)
+    probs = np.exp(s_pred)/np.sum(np.exp(s_pred))
+    # pp('soft max =', probs)
+    return probs
+    # TODO implement softmax
+    # Your final implementation shouldn't have any loops
+    raise Exception("Not implemented!")
+
+
+def cross_entropy_loss(probs, target_index):
+    '''
+    Computes cross-entropy loss
+
+    Arguments:
+      probs, np array, shape is either (N) or (batch_size, N) -
+        probabilities for every class
+      target_index: np array of int, shape is (1) or (batch_size) -
+        index of the true class for given sample(s)
+
+    Returns:
+      loss: single value
+    '''
+    
+    log =   np.sum(- np.log(probs[np.arange(probs.shape[0]),target_index.flatten()]))
+    pp ('log loss = ',log)
+    return log
+    # TODO implement cross-entropy
+    # Your final implementation shouldn't have any loops
+    raise Exception("Not implemented!")
+
 
 def l2_regularization(W, reg_strength):
     """
@@ -13,12 +55,23 @@ def l2_regularization(W, reg_strength):
       loss, single value - l2 regularization loss
       gradient, np.array same shape as W - gradient of weight by l2 loss
     """
+
+    # pp('enter of L2 ',W.shape,reg_strength)
+    n_classes = W.shape[1]
+
+    loss = reg_strength * np.sum(W**2)
+    loss/=n_classes
+    grad = reg_strength*W
+    # pp('L2 loss, grad = ',loss,grad)
+    return loss, grad
+
+
     # TODO: Copy from the previous assignment
     raise Exception("Not implemented!")
     return loss, grad
 
 
-def softmax_with_cross_entropy(preds, target_index):
+def softmax_with_cross_entropy(predictions, target_index):
     """
     Computes softmax and cross-entropy loss for model predictions,
     including the gradient
@@ -33,6 +86,24 @@ def softmax_with_cross_entropy(preds, target_index):
       loss, single value - cross-entropy loss
       dprediction, np array same shape as predictions - gradient of predictions by loss value
     """
+
+    n_samples = predictions.shape[0]  
+    n_featerus = predictions.shape[1] if len(predictions.shape)>1 else 0
+    # pp('enter of the function = ',predictions, target_index)
+    
+    softmax_ = softmax(predictions)
+    
+    loss = cross_entropy_loss(softmax_,target_index)
+    loss = loss/n_samples
+    prediction = softmax_.copy()
+    prediction[np.arange(n_samples),target_index.ravel()]-=1/n_samples
+    
+    # pp('=N_SUMPLES=',n_samples)
+    # prediction/=n_samples
+    # pp('loss , grand (prediction) = ',loss, prediction)
+    return loss, prediction
+
+
     # TODO: Copy from the previous assignment
     raise Exception("Not implemented!")
 
