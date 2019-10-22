@@ -82,7 +82,7 @@ class Trainer:
             self.setup_optimizers()
 
         num_train = self.dataset.train_X.shape[0]
-
+        
         loss_history = []
         train_acc_history = []
         val_acc_history = []
@@ -92,7 +92,6 @@ class Trainer:
             np.random.shuffle(shuffled_indices)
             sections = np.arange(self.batch_size, num_train, self.batch_size)
             batches_indices = np.array_split(shuffled_indices, sections)
-
             batch_losses = []
 
             for batch_indices in batches_indices:

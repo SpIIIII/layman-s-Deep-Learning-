@@ -42,36 +42,39 @@ class TwoLayerNet:
         # raise Exception("Not implemented!")
         self.X = X
                 
-        first_layer = FullyConnectedLayer(self.n_input,self.hidden_layer_size)
-        first_relu = ReLULayer()
+        self.first_layer = FullyConnectedLayer(self.n_input,self.hidden_layer_size)
+        self.first_relu = ReLULayer()
 
-        second_layer = FullyConnectedLayer(self.hidden_layer_size,self.n_output)
-        second_relu = ReLULayer()
+        self.second_layer = FullyConnectedLayer(self.hidden_layer_size,self.n_output)
+        self.second_relu = ReLULayer()
 
 
-        first_layer_f_out = first_layer.forward(self.X)
-        first_relu_f_out = first_relu.forward(first_layer_f_out)
+        first_layer_f_out = self.first_layer.forward(self.X)
+        first_relu_f_out = self.first_relu.forward(first_layer_f_out)
 
-        second_layer_f_out = second_layer.forward(first_relu_f_out)
-        second_relu_f_out = second_relu.forward(second_layer_f_out)
+        second_layer_f_out = self.second_layer.forward(first_relu_f_out)
+        second_relu_f_out = self.second_relu.forward(second_layer_f_out)
 
         loss, grad = softmax_with_cross_entropy(second_relu_f_out,y)
 
         
-        second_relu_b_out = second_relu.backward(loss)
+        second_relu_b_out = self.second_relu.backward(loss)
         self.result[str(second_relu_b_out)]=second_relu_b_out
-        second_layer_b_out = second_layer.backward(second_relu_b_out)
+        second_layer_b_out = self.second_layer.backward(second_relu_b_out)
         self.result[str(second_layer_b_out)]=second_layer_b_out
 
-        first_relu_b_out = first_relu.backward(second_layer_b_out)
+        first_relu_b_out = self.first_relu.backward(second_layer_b_out)
         self.result[str(first_relu_b_out)]=first_relu_b_out
-        first_layer_b_out = first_layer.backward(first_relu_b_out)
+        first_layer_b_out = self.first_layer.backward(first_relu_b_out)
         self.result[str(first_layer_b_out)]=first_layer_b_out
 
 
         
         # TODO Compute loss and fill param gradients
         # by running forward and backward passes through the model
+
+        for key in self.result:
+            self.result[key] -= l2_regularization(self.result[key],self.reg)[1]
         
         # After that, implement l2 regularization on all params
         # Hint: self.params() is useful again!
@@ -89,12 +92,17 @@ class TwoLayerNet:
         Returns:
           y_pred, np.array of int (test_samples)
         """
+        
+        pred = np.zeros(X.shape[0], np.int)
+        for key in self.result:
+            X = X.dot(self.result[key])
+        
+        
         # TODO: Implement predict
         # Hint: some of the code of the compute_loss_and_gradients
         # can be reused
-        pred = np.zeros(X.shape[0], np.int)
-
-        raise Exception("Not implemented!")
+        
+        
         return pred
 
     def params(self):
