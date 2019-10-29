@@ -67,9 +67,7 @@ def l2_regularization(W, reg_strength):
 
 
     # TODO: Copy from the previous assignment
-    raise Exception("Not implemented!")
-    return loss, grad
-
+    
 
 def softmax_with_cross_entropy(predictions, target_index):
     """
@@ -105,9 +103,7 @@ def softmax_with_cross_entropy(predictions, target_index):
 
 
     # TODO: Copy from the previous assignment
-    raise Exception("Not implemented!")
-
-    return loss, d_preds
+    
 
 
 class Param:
@@ -133,7 +129,7 @@ class ReLULayer:
         # TODO: Implement forward pass
         # Hint: you'll need to save some information about X
         # to use it later in the backward pass
-        raise Exception("Not implemented!")
+        
 
     def backward(self, d_out):
         """
@@ -152,9 +148,7 @@ class ReLULayer:
 
         # TODO: Implement backward pass
         # Your final implementation shouldn't have any loops
-        raise Exception("Not implemented!")
-        return d_result
-
+        
     def params(self):
         # ReLU Doesn't have any parameters
         return {}
@@ -172,7 +166,7 @@ class FullyConnectedLayer:
 
         # TODO: Implement forward pass
         # Your final implementation shouldn't have any loops
-        raise Exception("Not implemented!")
+        
 
     def backward(self, d_out):
         """
@@ -206,9 +200,6 @@ class FullyConnectedLayer:
         # It should be pretty similar to linear classifier from
         # the previous assignment
 
-        raise Exception("Not implemented!")
-
-        return d_input
 
     def params(self):
         return {'W': self.W, 'B': self.B}

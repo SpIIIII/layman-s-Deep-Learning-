@@ -129,10 +129,11 @@ def check_model_gradient(model, X, y,
       bool indicating whether gradients match or not
     """
     params = model.params()
-
+    print(params)
     for param_key in params:
-        print("Checking gradient for %s" % param_key)
+        pp("Checking gradient for ", param_key)
         param = params[param_key]
+        
         initial_w = param.value
 
         def helper_func(w):

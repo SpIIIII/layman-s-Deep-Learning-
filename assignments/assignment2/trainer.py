@@ -99,8 +99,10 @@ class Trainer:
                 # use model to generate loss and gradients for all
                 # the params
 
-                raise Exception("Not implemented!")
+                batch = self.dataset.train_X[batch_indices]
+                label = self.dataset.train_y[batch_indices]
 
+                
                 for param_name, param in self.model.params().items():
                     optimizer = self.optimizers[param_name]
                     param.value = optimizer.update(param.value, param.grad, self.learning_rate)

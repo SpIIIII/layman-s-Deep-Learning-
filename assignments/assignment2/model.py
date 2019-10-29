@@ -14,7 +14,7 @@ class TwoLayerNet:
         n_input, int - dimension of the model input
         n_output, int - number of classes to predict
         hidden_layer_size, int - number of neurons in the hidden layer
-        reg, float - L2 regularization strength
+        reg, float - L2 regularization ngth
         """
         self.reg = reg
         self.n_input = n_input
@@ -33,7 +33,7 @@ class TwoLayerNet:
         y, np array of int (batch_size) - classes
         """
 
-        self.result = {}
+        
 
         # Before running forward and backward pass through the model,
         # clear parameter gradients aggregated from the previous pass
@@ -59,22 +59,26 @@ class TwoLayerNet:
 
         
         second_relu_b_out = self.second_relu.backward(loss)
-        self.result[str(second_relu_b_out)]=second_relu_b_out
+        second_relu_param = self.second_relu.params()
+        self.result['second_relu_param']=second_relu_param
         second_layer_b_out = self.second_layer.backward(second_relu_b_out)
-        self.result[str(second_layer_b_out)]=second_layer_b_out
+        second_layer_param = self.second_layer.params()
+        self.result['second_layer_param']=second_layer_param
 
         first_relu_b_out = self.first_relu.backward(second_layer_b_out)
-        self.result[str(first_relu_b_out)]=first_relu_b_out
+        first_relu_param = self.first_relu.params()
+        self.result['first_relu_param']=first_relu_param
         first_layer_b_out = self.first_layer.backward(first_relu_b_out)
-        self.result[str(first_layer_b_out)]=first_layer_b_out
+        first_layer_param = self.first_layer.params()
+        self.result['first_layer_param']=first_layer_param
 
 
         
         # TODO Compute loss and fill param gradients
         # by running forward and backward passes through the model
 
-        for key in self.result:
-            self.result[key] -= l2_regularization(self.result[key],self.reg)[1]
+        # for key in self.result:
+        #     self.result[key] += l2_regularization(self.result[key],self.reg)[1]
         
         # After that, implement l2 regularization on all params
         # Hint: self.params() is useful again!
@@ -106,7 +110,5 @@ class TwoLayerNet:
         return pred
 
     def params(self):
-        self.result = {}
-
-
-        return self.result
+        result = {}
+        return result
