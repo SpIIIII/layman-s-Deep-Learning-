@@ -20,8 +20,14 @@ class TwoLayerNet:
         self.n_input = n_input
         self.n_output = n_output
         self.hidden_layer_size = hidden_layer_size
+
         # # TODO Create necessary layers
         # raise Exception("Not implemented!")
+        self.first_layer = FullyConnectedLayer(self.n_input,self.hidden_layer_size)
+        self.first_relu = ReLULayer()
+
+        self.second_layer = FullyConnectedLayer(self.hidden_layer_size,self.n_output)
+        self.second_relu = ReLULayer()
 
     def compute_loss_and_gradients(self, X, y):
         """
@@ -33,55 +39,49 @@ class TwoLayerNet:
         y, np array of int (batch_size) - classes
         """
 
-        
+        self.X = X
 
         # Before running forward and backward pass through the model,
         # clear parameter gradients aggregated from the previous pass
         # TODO Set parameter gradient to zeros
         # Hint: using self.params() might be useful!
         # raise Exception("Not implemented!")
-        self.X = X
-                
-        self.first_layer = FullyConnectedLayer(self.n_input,self.hidden_layer_size)
-        self.first_relu = ReLULayer()
-
-        self.second_layer = FullyConnectedLayer(self.hidden_layer_size,self.n_output)
-        self.second_relu = ReLULayer()
-
-
-        first_layer_f_out = self.first_layer.forward(self.X)
-        first_relu_f_out = self.first_relu.forward(first_layer_f_out)
-
-        second_layer_f_out = self.second_layer.forward(first_relu_f_out)
-        second_relu_f_out = self.second_relu.forward(second_layer_f_out)
-
-        loss, grad = softmax_with_cross_entropy(second_relu_f_out,y)
-
+        self.result = {}
         
-        second_relu_b_out = self.second_relu.backward(loss)
-        second_relu_param = self.second_relu.params()
-        self.result['second_relu_param']=second_relu_param
-        second_layer_b_out = self.second_layer.backward(second_relu_b_out)
-        second_layer_param = self.second_layer.params()
-        self.result['second_layer_param']=second_layer_param
-
-        first_relu_b_out = self.first_relu.backward(second_layer_b_out)
-        first_relu_param = self.first_relu.params()
-        self.result['first_relu_param']=first_relu_param
-        first_layer_b_out = self.first_layer.backward(first_relu_b_out)
-        first_layer_param = self.first_layer.params()
-        self.result['first_layer_param']=first_layer_param
 
 
         
         # TODO Compute loss and fill param gradients
         # by running forward and backward passes through the model
+        first_layer_f_out = self.first_layer.forward(self.X)
+        first_relu_f_out = self.first_relu.forward(first_layer_f_out)
+        first_layer_param = self.first_layer.params()
+        self.result['first layer W']=first_layer_param['W']
+        self.result['first layer B']=first_layer_param['B']
 
-        # for key in self.result:
-        #     self.result[key] += l2_regularization(self.result[key],self.reg)[1]
+        second_layer_f_out = self.second_layer.forward(first_relu_f_out)
+        second_relu_f_out = self.second_relu.forward(second_layer_f_out)
+        second_layer_param = self.second_layer.params()
+        self.result['second layer W']=second_layer_param['W']
+        self.result['second layer B']=second_layer_param['B']        
+
+
+        loss, grad = softmax_with_cross_entropy(second_relu_f_out,y)
+
+        
+        second_relu_b_out = self.second_relu.backward(grad)
+        second_layer_b_out = self.second_layer.backward(second_relu_b_out)
+        
+        first_relu_b_out = self.first_relu.backward(second_layer_b_out)
+        first_layer_b_out = self.first_layer.backward(first_relu_b_out)
+
+        
         
         # After that, implement l2 regularization on all params
         # Hint: self.params() is useful again!
+        #  for key in self.result:
+        #     self.result[key] += l2_regularization(self.result[key],self.reg)[1]
+        
         
 
         return loss
@@ -110,5 +110,4 @@ class TwoLayerNet:
         return pred
 
     def params(self):
-        result = {}
-        return result
+        return self.result

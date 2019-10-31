@@ -161,11 +161,13 @@ class FullyConnectedLayer:
         self.X = None
 
     def forward(self, X):
+      
+        # TODO: Implement forward pass
+        # Your final implementation shouldn't have any loops
         self.X = X
         return self.X.dot(self.W.value)+self.B.value
 
-        # TODO: Implement forward pass
-        # Your final implementation shouldn't have any loops
+        
         
 
     def backward(self, d_out):

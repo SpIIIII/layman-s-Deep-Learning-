@@ -135,7 +135,8 @@ def check_model_gradient(model, X, y,
         param = params[param_key]
         
         initial_w = param.value
-
+        pp('initial w (param value)',initial_w.shape,initial_w)
+        pp('grads', param.grad.shape,param.grad)
         def helper_func(w):
             param.value = w
             loss = model.compute_loss_and_gradients(X, y)
