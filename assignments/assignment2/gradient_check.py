@@ -3,24 +3,25 @@ import numpy as np
 
 def check_gradient(f, x, delta=1e-5, tol=1e-4):
     """
-    Checks the implementation of analytical gradient by comparing
-    it to numerical gradient using two-point formula
+      Checks the implementation of analytical gradient by comparing
+      it to numerical gradient using two-point formula
 
-    Arguments:
-      f: function that receives x and computes value and gradient
-      x: np array, initial point where gradient is checked
-      delta: step to compute numerical gradient
-      tol: tolerance for comparing numerical and analytical gradient
+      Arguments:
+        f: function that receives x and computes value and gradient
+        x: np array, initial point where gradient is checked
+        delta: step to compute numerical gradient
+        tol: tolerance for comparing numerical and analytical gradient
 
-    Return:
-      bool indicating whether gradients match or not
+      Return:
+        bool indicating whether gradients match or not
     """
+
     assert isinstance(x, np.ndarray)
     assert x.dtype == np.float
 
     fx, analytic_grad = f(x)
     analytic_grad = analytic_grad.copy()
-
+    pp('ANAL', analytic_grad)
     assert analytic_grad.shape == x.shape
 
     it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
@@ -39,7 +40,7 @@ def check_gradient(f, x, delta=1e-5, tol=1e-4):
         y2[ix]-=delta
         
         numeric_grad_at_ix = (f(y1)[0]-f(y2)[0])/(delta*2)
-        print(f'==GRAD_CHECK== at {ix}  num =' ,numeric_grad_at_ix,'anal =',analytic_grad_at_ix)
+        print(f'==GRAD_CHECK== at {ix}  anal =' ,analytic_grad_at_ix, 'num =', numeric_grad_at_ix, 'ratio =', analytic_grad_at_ix/numeric_grad_at_ix)
 
         if not np.isclose(numeric_grad_at_ix, analytic_grad_at_ix, tol):
             print("Gradients are different at %s. Analytic: %2.5f, Numeric: %2.5f" % (
@@ -54,16 +55,16 @@ def check_gradient(f, x, delta=1e-5, tol=1e-4):
 
 def check_layer_gradient(layer, x, delta=1e-5, tol=1e-4):
     """
-    Checks gradient correctness for the input and output of a layer
+      Checks gradient correctness for the input and output of a layer
 
-    Arguments:
-      layer: neural network layer, with forward and backward functions
-      x: starting point for layer input
-      delta: step to compute numerical gradient
-      tol: tolerance for comparing numerical and analytical gradient
+      Arguments:
+        layer: neural network layer, with forward and backward functions
+        x: starting point for layer input
+        delta: step to compute numerical gradient
+        tol: tolerance for comparing numerical and analytical gradient
 
-    Returns:
-      bool indicating whether gradients match or not
+      Returns:
+        bool indicating whether gradients match or not
     """
     output = layer.forward(x)
     output_weight = np.random.randn(*output.shape)
@@ -71,7 +72,9 @@ def check_layer_gradient(layer, x, delta=1e-5, tol=1e-4):
     def helper_func(x):
         output = layer.forward(x)
         loss = np.sum(output * output_weight)
+
         d_out = np.ones_like(output) * output_weight
+
         grad = layer.backward(d_out)
         
         return loss, grad
@@ -83,18 +86,19 @@ def check_layer_param_gradient(layer, x,
                                param_name,
                                delta=1e-5, tol=1e-4):
     """
-    Checks gradient correctness for the parameter of the layer
+      Checks gradient correctness for the parameter of the layer
 
-    Arguments:
-      layer: neural network layer, with forward and backward functions
-      x: starting point for layer input
-      param_name: name of the parameter
-      delta: step to compute numerical gradient
-      tol: tolerance for comparing numerical and analytical gradient
+      Arguments:
+        layer: neural network layer, with forward and backward functions
+        x: starting point for layer input
+        param_name: name of the parameter
+        delta: step to compute numerical gradient
+        tol: tolerance for comparing numerical and analytical gradient
 
-    Returns:
-      bool indicating whether gradients match or not
+      Returns:
+        bool indicating whether gradients match or not
     """
+    
     param = layer.params()[param_name]
     initial_w = param.value
 
@@ -116,37 +120,37 @@ def check_layer_param_gradient(layer, x,
 def check_model_gradient(model, X, y,
                          delta=1e-5, tol=1e-4):
     """
-    Checks gradient correctness for all model parameters
+        Checks gradient correctness for all model parameters
 
-    Arguments:
-      model: neural network model with compute_loss_and_gradients
-      X: batch of input data
-      y: batch of labels
-      delta: step to compute numerical gradient
-      tol: tolerance for comparing numerical and analytical gradient
+        Arguments:
+          model: neural network model with compute_loss_and_gradients
+          X: batch of input data
+          y: batch of labels
+          delta: step to compute numerical gradient
+          tol: tolerance for comparing numerical and analytical gradient
 
-    Returns:
-      bool indicating whether gradients match or not
+        Returns:
+          bool indicating whether gradients match or not
     """
+    print('==== start test =====')
     params = model.params()
-    print(params)
+    
     for param_key in params:
-        pp("Checking gradient for ", param_key)
         param = params[param_key]
-        
         initial_w = param.value
-        pp('initial w (param value)',initial_w.shape,initial_w)
-        pp('grads', param.grad.shape,param.grad)
+        pp('Check grads for ', param_key)
         def helper_func(w):
             param.value = w
             loss = model.compute_loss_and_gradients(X, y)
             grad = param.grad
+            
             return loss, grad
 
         if not check_gradient(helper_func, initial_w, delta, tol):
             return False
 
     return True
+    
 def fmt_items(lines,max_lines=0):
     max_width=max([len(line)for line in lines])
     empty =' '*max_width
@@ -160,3 +164,5 @@ def pp (*list):
     lines = [fmt_items(item,max_lines=max_lines)for item in lines]
     lines_t= np.array(lines).T
     print('\n'.join([' '.join(line) for  line in lines_t]))
+
+

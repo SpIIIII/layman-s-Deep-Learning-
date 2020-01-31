@@ -23,24 +23,25 @@ def softmax(predictions):
 
 def cross_entropy_loss(probs, target_index):
     '''
-    Computes cross-entropy loss
+      Computes cross-entropy loss
 
-    Arguments:
-      probs, np array, shape is either (N) or (batch_size, N) -
-        probabilities for every class
-      target_index: np array of int, shape is (1) or (batch_size) -
-        index of the true class for given sample(s)
+      Arguments:
+        probs, np array, shape is either (N) or (batch_size, N) -
+          probabilities for every class
+        target_index: np array of int, shape is (1) or (batch_size) -
+          index of the true class for given sample(s)
 
-    Returns:
-      loss: single value
+      Returns:
+        loss: single value
     '''
+
+    pp(probs, target_index)
     
     log =   np.sum(- np.log(probs[np.arange(probs.shape[0]),target_index.flatten()]))
     pp ('log loss = ',log)
     return log
     # TODO implement cross-entropy
     # Your final implementation shouldn't have any loops
-    raise Exception("Not implemented!")
 
 
 def softmax_with_cross_entropy(predictions, target_index):
