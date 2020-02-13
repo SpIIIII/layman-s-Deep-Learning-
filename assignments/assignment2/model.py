@@ -66,9 +66,11 @@ class TwoLayerNet:
         second_layer_f_out = self.second_layer.forward(first_relu_f_out)
         second_relu_f_out = self.second_relu.forward(second_layer_f_out)
 
-        loss, grad = softmax_with_cross_entropy(second_relu_f_out, y)
-        
+        # pp(second_relu_f_out.argmax(axis=1), y) # to compare predicted with actual
 
+        loss, grad = softmax_with_cross_entropy(second_relu_f_out, y)
+        print('before', loss)
+        
         second_relu_b_out = self.second_relu.backward(grad)
         second_layer_b_out = self.second_layer.backward(second_relu_b_out)
 
@@ -78,21 +80,19 @@ class TwoLayerNet:
         
         # After that, implement l2 regularization on all params
         # Hint: self.params() is useful again!
+     
         for key in self.result:
-            # print('LOSS', loss)
+            pp('grad', key )
             l2_loss, l2_grad = l2_regularization(self.result[key], self.reg)
-            self.result[key].grad += l2_grad*2  ## test passed with that 2 coeficient, but i can't findout where indicatet that it's needed
+            pp(self.result[key].grad.sum(), l2_grad.sum())
+            self.result[key].grad += l2_grad 
+            pp(self.result[key].grad.sum())
             loss += l2_loss
-            
+        print('\n==========================\n') 
+        print('after', loss, '\n\n\n')
         return loss
     
-    def apply_grads(self, learning_rate=1e-2):
-        for i in self.result:
-            # pp("APPLY")
-            # pp('W pre', self.result[i].value)
-            # pp('G', self.result[i].grad* learning_rate)
-            self.result[i].value -= self.result[i].grad* learning_rate
-            # pp('W post',self.result[i].value)
+
 
     def predict(self, X):
         """
@@ -114,7 +114,7 @@ class TwoLayerNet:
         second_layer_f_out = self.second_layer.forward(first_relu_f_out)
         second_relu_f_out = self.second_relu.forward(second_layer_f_out)
 
-        pp(second_relu_f_out)
+        # pp(second_relu_f_out)
         # TODO: Implement predict
         # Hint: some of the code of the compute_loss_and_gradients
         # can be reused        

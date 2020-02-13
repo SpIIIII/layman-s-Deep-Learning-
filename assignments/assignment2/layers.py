@@ -33,7 +33,7 @@ def cross_entropy_loss(probs, target_index):
       Returns:
         loss: single value
     '''
-    log = np.sum(- np.log(probs[np.arange(probs.shape[0]),target_index.flatten()]))
+    log = -np.sum(np.log(probs[np.arange(probs.shape[0]),target_index]))
     return log
     # TODO implement cross-entropy
     # Your final implementation shouldn't have any loops
@@ -52,14 +52,12 @@ def l2_regularization(W, reg_strength):
         gradient, np.array same shape as W - gradient of weight by l2 loss
     """
     n_classes = W.value.shape[1]
-    loss = reg_strength * np.sum(W.value**2)
+    loss = reg_strength * np.sum(W.value**2) *0.5
     loss/=n_classes
     grad = reg_strength*W.value
     grad /= n_classes
     # print('L2 LOSS', loss)
     return loss, grad
-
-
     # TODO: Copy from the previous assignment
     
 
@@ -79,15 +77,15 @@ def softmax_with_cross_entropy(predictions, target_index):
         dprediction, np array same shape as predictions - gradient of predictions by loss value
     """
     n_samples = predictions.shape[0]  
-    n_featerus = predictions.shape[1] if len(predictions.shape)>1 else 0
     # pp('enter of the function = ',predictions, target_index)
-    
-    softmax_ = softmax(predictions)
-    
-    loss = cross_entropy_loss(softmax_,target_index)
+    probs = softmax(predictions)
+    loss = cross_entropy_loss(probs, target_index)
     loss = loss/n_samples
-    prediction = softmax_.copy()
-    prediction[np.arange(n_samples),target_index.ravel()] -= 1/n_samples
+
+    prediction = probs.copy()
+    prediction[np.arange(n_samples), target_index] -= 1
+    # pp(prediction[np.arange(n_samples), target_index])
+    predictions /= n_samples
     
     # pp('=N_SUMPLES=',n_samples)
     # prediction/=n_samples

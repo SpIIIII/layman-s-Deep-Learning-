@@ -88,6 +88,10 @@ class Trainer:
         loss_history = []
         train_acc_history = []
         val_acc_history = []
+        first_layer_W = {}
+
+        for param_name, _ in self.model.params().items():
+            first_layer_W[param_name]=[]
         
         for epoch in range(self.num_epochs):
             shuffled_indices = np.arange(num_train)
@@ -109,14 +113,17 @@ class Trainer:
                 
                 for param_name, param in self.model.params().items():
                     optimizer = self.optimizers[param_name]
-                    # print('PARAM PRE', param.value.mean())
+                    # print('PARAM PRE', param_name)
+                    first_layer_W[param_name].append(param.value.sum())
                     param.value = optimizer.update(param.value, param.grad, self.learning_rate)
-                    # print(f'PARAM POST', param.value.mean(), '\n=========')
+                    # print('PARAM POST', param_name)
+                    # print(param.value.sum(), '\n=========')
                     
         
             if np.not_equal(self.learning_rate_decay, 1.0):
                 # TODO: Implement learning rate decay
-                self.learning_rate *= self.learning_rate_decay
+                # self.learning_rate *= self.learning_rate_decay
+                pass
 
             ave_loss = np.mean(batch_losses)
 
@@ -133,4 +140,4 @@ class Trainer:
             train_acc_history.append(train_accuracy)
             val_acc_history.append(val_accuracy)
 
-        return loss_history, train_acc_history, val_acc_history
+        return loss_history, train_acc_history, val_acc_history, first_layer_W
