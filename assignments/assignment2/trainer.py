@@ -121,8 +121,9 @@ class Trainer:
                     
         
             if np.not_equal(self.learning_rate_decay, 1.0):
+
                 # TODO: Implement learning rate decay
-                # self.learning_rate *= self.learning_rate_decay
+                self.learning_rate *= self.learning_rate_decay
                 pass
 
             ave_loss = np.mean(batch_losses)

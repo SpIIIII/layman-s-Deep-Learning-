@@ -56,7 +56,6 @@ def l2_regularization(W, reg_strength):
     loss/=n_classes
     grad = reg_strength*W.value
     grad /= n_classes
-    # print('L2 LOSS', loss)
     return loss, grad
     # TODO: Copy from the previous assignment
     
@@ -138,8 +137,6 @@ class ReLULayer:
             with respect to input
         """
         return np.where(self.X>=0,1,0)*d_out
-
-
         # TODO: Implement backward pass
         # Your final implementation shouldn't have any loops
         
@@ -184,7 +181,6 @@ class FullyConnectedLayer:
 
         self.W.grad += d_W
         self.B.grad += d_B
-
         
         return d_input
 
@@ -216,4 +212,3 @@ def pp (*list):
     max_lines=max([len(item)for  item in lines])
     lines = [fmt_items(item,max_lines=max_lines)for item in lines]
     lines_t= np.array(lines).T
-    print('\n'.join([' '.join(line) for  line in lines_t]))

@@ -69,7 +69,6 @@ class TwoLayerNet:
         # pp(second_relu_f_out.argmax(axis=1), y) # to compare predicted with actual
 
         loss, grad = softmax_with_cross_entropy(second_relu_f_out, y)
-        print('before', loss)
         
         second_relu_b_out = self.second_relu.backward(grad)
         second_layer_b_out = self.second_layer.backward(second_relu_b_out)
@@ -88,8 +87,6 @@ class TwoLayerNet:
             self.result[key].grad += l2_grad 
             pp(self.result[key].grad.sum())
             loss += l2_loss
-        print('\n==========================\n') 
-        print('after', loss, '\n\n\n')
         return loss
     
 
